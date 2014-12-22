@@ -1,4 +1,5 @@
 
+import java.io.IOException;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -42,16 +43,23 @@ public class MenuGame {
         this.choixY = 47;
     }
     
-    public void render(Graphics g) throws SlickException {
-        background.draw(0, 0, 800, 600);
-        if(gameTitle == false) {
-            choixImg.draw(choixX, choixY);
-            g.setColor(Color.black);
-            g.drawString(joueur.getNom(),160,350);
-            g.drawString(Integer.toString(joueur.getGold()),160,410);
-            g.drawString(Integer.toString(joueur.getBadge()),180,470);
-            g.drawString(Integer.toString(joueur.getPokedex()),120,530);
-       }
+    public void render(Graphics g) throws SlickException, IOException {
+        if(joueur.getNewGame() == true) {
+            background.destroy();
+            g.setColor(Color.white);
+            g.drawString(joueur.getNom(), 300, 400);
+        }
+        if(joueur.getNewGame() == false) {
+            background.draw(0, 0, 800, 600);
+            if(gameTitle == false) {
+                choixImg.draw(choixX, choixY);
+                g.setColor(Color.black);
+                g.drawString(joueur.getNom(),160,350);
+                g.drawString(Integer.toString(joueur.getGold()),160,410);
+                g.drawString(Integer.toString(joueur.getBadge()),180,470);
+                g.drawString(Integer.toString(joueur.getPokedex()),120,530);
+           }
+        }
     }
     
     public void update() throws SlickException, InterruptedException {
@@ -78,6 +86,10 @@ public class MenuGame {
                             if(choixContinue == 1) {
                                 this.joueur.setGameBegin(false);
                                 this.joueur.setGameStart(true);
+                           }
+                            if(choixContinue == 2) {
+                                joueur.setNewGame(true);
+                                joueur.setNom("");
                            }
                         } 
                         else {

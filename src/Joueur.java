@@ -27,6 +27,7 @@ public class Joueur {
     private boolean gameBegin;
     private boolean gameStart;
     private boolean gameBattle;
+    private boolean newGame;
     
     //Variable Stat (Nom,Gold,etc ...)
     private String nom;
@@ -43,6 +44,7 @@ public class Joueur {
         this.gameBegin = true;
         this.gameStart = false;
         this.gameBattle = false;
+        this.setNewGame(false);
         
         //Variable Stat
         this.nom= "Momo";
@@ -84,23 +86,25 @@ public class Joueur {
     
     // Cette méthode permet de mettre à jour la position du personnage
       public void update(int delta){
-           if (this.moving) {
-            switch (this.direction) {
-                //0 sud, 1 ouest, 2 nord, 3 est ...
-            case 0:
-                this.y -= .1f * delta;
-                break;
-            case 1:
-                this.x -= .1f * delta;
-                break;
-            case 2:
-                this.y += .1f * delta;
-                break;
-            case 3:
-                this.x += .1f * delta;
-                break;
-            }
-          }
+          if(gameStart == true) {
+            if (this.moving) {
+             switch (this.direction) {
+                 //0 sud, 1 ouest, 2 nord, 3 est ...
+             case 0:
+                 this.y -= .1f * delta;
+                 break;
+             case 1:
+                 this.x -= .1f * delta;
+                 break;
+             case 2:
+                 this.y += .1f * delta;
+                 break;
+             case 3:
+                 this.x += .1f * delta;
+                 break;
+             }
+           }
+         }
        }
       
       
@@ -180,6 +184,12 @@ public class Joueur {
            public void setPokedex(int pokedex) {
                this.pokedex = pokedex;
            }
-      
+           public boolean getNewGame() {
+               return newGame;
+           }
+           public void setNewGame(boolean newGame) {
+               this.newGame = newGame;
+           }
+
 }
       
