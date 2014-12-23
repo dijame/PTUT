@@ -44,13 +44,11 @@ public class MenuGame {
     }
     
     public void render(Graphics g) throws SlickException, IOException {
+        background.draw(0, 0, 800, 600);
         if(joueur.getNewGame() == true) {
-            background.destroy();
-            g.setColor(Color.white);
-            g.drawString(joueur.getNom(), 300, 400);
-        }
+            g.drawString(joueur.getNom(), 450, 480);
+        }       
         if(joueur.getNewGame() == false) {
-            background.draw(0, 0, 800, 600);
             if(gameTitle == false) {
                 choixImg.draw(choixX, choixY);
                 g.setColor(Color.black);
@@ -63,7 +61,7 @@ public class MenuGame {
     }
     
     public void update() throws SlickException, InterruptedException {
-        if(gameTitle == false) background= new Image("ressource/Background/continue.png");
+        if(gameTitle == false && joueur.getNewGame() == false) background= new Image("ressource/Background/continue.png");
         if(joueur.getGameBegin() == true) {
             if(joueur.getMoving() == true) {
                 switch (joueur.getDirection()) {
@@ -90,6 +88,7 @@ public class MenuGame {
                             if(choixContinue == 2) {
                                 joueur.setNewGame(true);
                                 joueur.setNom("");
+                                background = new Image("ressource/Background/newGame.png");
                            }
                         } 
                         else {
