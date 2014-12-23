@@ -6,7 +6,6 @@
 
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Color;
-import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
@@ -23,12 +22,16 @@ public class Joueur {
     private boolean moving = false;
     private Animation[] animations = new Animation[8];
     private Carte map;
+    
     // Variable d'état
     private boolean gameBegin;
     private boolean gameStart;
     private boolean gameBattle;
     private boolean newGame;
     
+    //Variable menu
+    private boolean menu;
+            
     //Variable Stat (Nom,Gold,etc ...)
     private String nom;
     private int gold;
@@ -44,7 +47,10 @@ public class Joueur {
         this.gameBegin = true;
         this.gameStart = false;
         this.gameBattle = false;
-        this.setNewGame(false);
+        this.newGame = false;
+        
+        //Varialbe menu
+        this.menu = false;
         
         //Variable Stat
         this.nom= "Momo";
@@ -86,7 +92,7 @@ public class Joueur {
     
     // Cette méthode permet de mettre à jour la position du personnage
       public void update(int delta){
-          if(gameStart == true) {
+          if(gameStart == true && menu == false) {
             if (this.moving) {
              switch (this.direction) {
                  //0 sud, 1 ouest, 2 nord, 3 est ...
@@ -107,7 +113,15 @@ public class Joueur {
          }
        }
       
-      
+    public void transformerEn(Joueur data) {
+        x = data.getX();
+        y = data.getY();
+        nom = data.getNom();
+        gold = data.getGold();
+        pokedex = data.getPokedex();
+        direction = data.getDirection();
+        gameStart = data.getGameStart();
+    }
     /*      Les getteurs et setteur permettent, à partir de la classe JoueurCommande d'avoir acces
             à la position du personnage, savoir si il est en mouvement via sa direction et le boolean
             mooving.
@@ -190,6 +204,12 @@ public class Joueur {
            public void setNewGame(boolean newGame) {
                this.newGame = newGame;
            }
+            public boolean getMenu() {
+                return menu;
+            }
+            public void setMenu(boolean menu) {
+                this.menu = menu;
+            }
 
 }
       
