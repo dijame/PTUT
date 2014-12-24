@@ -86,7 +86,7 @@ public class Joueur {
     */
       public void render( Graphics g) throws SlickException {
         g.setColor(new Color(0, 0, 0, .5f));
-        g.fillOval(x-30 , y - 6, 32, 16); 
+        g.fillOval(x-30 , y - 6, 32, 16);
         g.drawAnimation(animations[direction + (moving ? 4 : 0)], x - 40, y - 40);
     }
     
@@ -112,16 +112,6 @@ public class Joueur {
            }
          }
        }
-      
-    public void transformerEn(Joueur data) {
-        x = data.getX();
-        y = data.getY();
-        nom = data.getNom();
-        gold = data.getGold();
-        pokedex = data.getPokedex();
-        direction = data.getDirection();
-        gameStart = data.getGameStart();
-    }
     /*      Les getteurs et setteur permettent, à partir de la classe JoueurCommande d'avoir acces
             à la position du personnage, savoir si il est en mouvement via sa direction et le boolean
             mooving.
@@ -210,6 +200,15 @@ public class Joueur {
             public void setMenu(boolean menu) {
                 this.menu = menu;
             }
+
+    public void transformerEn(StateJoueur sauvegarde) {
+        x = sauvegarde.getX(); y = sauvegarde.getY();
+        nom = sauvegarde.getNom();
+        gold = sauvegarde.getGold();
+        badge = sauvegarde.getBadge();
+        pokedex = sauvegarde.getPokedex();
+        
+    }
 
 }
       

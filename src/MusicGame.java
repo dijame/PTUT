@@ -36,10 +36,12 @@ public class MusicGame {
     }
     
     public void update() throws SlickException {
-        if(menuG.getGameTitle() == false) backgroundMusic.stop();
-        if(this.joueur.getGameBegin() == true) {
-            if(joueur.getMoving() == true) {
-                this.select.play();
+        if(menuG.getGameTitle() == false) {
+            backgroundMusic.stop();
+            if(this.joueur.getGameBegin() == true || joueur.getMenu() == true) {
+                if(joueur.getMoving() == true) {
+                    this.select.play();
+                }
             }
         }
     }

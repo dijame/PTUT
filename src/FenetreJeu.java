@@ -4,8 +4,12 @@
  * and open the template in the editor.
  */
 
-import java.awt.event.KeyEvent;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.newdawn.slick.AppGameContainer;
@@ -56,14 +60,14 @@ public class FenetreJeu extends BasicGame {
 
     @Override
     public void render(GameContainer gc, Graphics grphcs) throws SlickException {
-        if(joueur.getGameBegin() == true) try {
-            this.menuG.render(grphcs);
-        } catch (IOException ex) {
-            Logger.getLogger(FenetreJeu.class.getName()).log(Level.SEVERE, null, ex);
-        }
         if(joueur.getGameStart()== true){
             this.map.render();
             this.joueur.render(grphcs);
+        } 
+        try {
+            this.menuG.render(grphcs);
+        } catch (IOException ex) {
+            Logger.getLogger(FenetreJeu.class.getName()).log(Level.SEVERE, null, ex);
         }
         
     }
@@ -73,6 +77,8 @@ public class FenetreJeu extends BasicGame {
         try {
             this.menuG.update();
         } catch (InterruptedException ex) {
+            Logger.getLogger(FenetreJeu.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
             Logger.getLogger(FenetreJeu.class.getName()).log(Level.SEVERE, null, ex);
         }
         this.joueur.update(delta);
@@ -91,6 +97,33 @@ public class FenetreJeu extends BasicGame {
   
     public void keyPressed(int key, char c) {
         this.commande.keyPressed(key, c);
-       
-}
+        if(menuG.getChoixMenu() == 6) try {
+            sauvegarder();
+        } catch (IOException ex) {
+            Logger.getLogger(FenetreJeu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if(menuG.getChoixContinue() == 1) try {
+            charger();
+        } catch (IOException ex) {
+            Logger.getLogger(FenetreJeu.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(FenetreJeu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    private void sauvegarder() throws FileNotFoundException, IOException { // throws -> la fonction peut renvoyer les erreurs suivantes. (voir try/catch plus tard).
+        StateJoueur sauvegarde = new StateJoueur(this.joueur);
+
+        FileOutputStream sortieDeFicher = sortieDeFicher = new FileOutputStream("ressource/Save/save.pkm");
+        ObjectOutputStream sortieDObjet = new ObjectOutputStream(sortieDeFicher);
+        sortieDObjet.writeObject(sauvegarde);
+        sortieDObjet.close();
+    }
+    
+        private void charger() throws FileNotFoundException, IOException, ClassNotFoundException {
+        FileInputStream entreeDeFicher  = new FileInputStream("ressource/Save/save.pkm");
+        ObjectInputStream entreeDObjet = new ObjectInputStream(entreeDeFicher);
+        StateJoueur sauvegarde = (StateJoueur) entreeDObjet.readObject();
+        entreeDObjet.close();
+        joueur.transformerEn(sauvegarde);
+    }
 }
