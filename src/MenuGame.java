@@ -1,4 +1,6 @@
 
+import Acteur.JoueurCommande;
+import Acteur.Joueur;
 import java.io.IOException;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -54,23 +56,16 @@ public class MenuGame {
     }
     
     public void render(Graphics g) throws SlickException, IOException {
-        if(joueur.getGameBegin() == true) {
+        if(joueur.getGameBegin() == true) { // Menu en début de jeu
             background.draw(0, 0, 800, 600);
             if(joueur.getNewGame() == true) {
                 g.drawString(joueur.getNom(), 450, 480);
             }       
             if(joueur.getNewGame() == false) {
-                if(gameTitle == false) {
-                    choixImg.draw(choixX, choixY);
-                    g.setColor(Color.black);
-                    g.drawString(joueur.getNom(),160,350);
-                    g.drawString(Integer.toString(joueur.getGold()),160,410);
-                    g.drawString(Integer.toString(joueur.getBadge()),180,470);
-                    g.drawString(Integer.toString(joueur.getPokedex()),120,530);
-               }
+                
             }
         }
-        if(joueur.getMenu() == true) {
+        if(joueur.getMenu() == true) { // Graphique menu inGame
             choixX= 570;
             menuImg.draw(0, 0, 800, 600);
             choixImg.draw(choixX,choixY);
@@ -81,11 +76,11 @@ public class MenuGame {
         if(gameTitle == false && joueur.getNewGame() == false) background= new Image("ressource/Background/continue.png");
         if(joueur.getGameBegin() == true) {
             if(joueur.getMoving() == true) {
-                switch (joueur.getDirection()) {
+                switch (joueur.getDirection()) { // Menu Continue,New Game et Option
                     case 1:
                         if(choixContinue > 1){
                             choixContinue --;
-                            choixY -= 60;
+                            choixY -= 60; 
                             Thread.sleep(100);
                         }
                     break;
@@ -98,11 +93,11 @@ public class MenuGame {
                     break;
                     case 3:
                         if(gameTitle == false) {
-                            if(choixContinue == 1) {
+                            if(choixContinue == 1) {// Continue
                                     joueur.setGameBegin(false);
                                     joueur.setGameStart(true);  
                            }
-                            if(choixContinue == 2) {
+                            if(choixContinue == 2) { // New Game
                                 joueur.setNewGame(true);
                                 joueur.setNom("");
                                 background = new Image("ressource/Background/newGame.png");
@@ -120,7 +115,7 @@ public class MenuGame {
         }
         if(joueur.getMenu() == true) {
             if(joueur.getMoving() == true) {
-                switch (joueur.getDirection()) {
+                switch (joueur.getDirection()) { // Menu inGame Pokedex,...
                     case 1:
                         if(choixMenu > 1){
                             choixMenu --;
@@ -136,10 +131,10 @@ public class MenuGame {
                         }
                     break;
                     case 3:
-                        if(choixMenu == 6) {      
+                        if(choixMenu == 6) { // Save
                             joueur.setMenu(false);
                            }
-                        if(choixMenu == 8) joueur.setMenu(false);
+                        if(choixMenu == 8) joueur.setMenu(false); // Exit
                     break;
                 }
             }
