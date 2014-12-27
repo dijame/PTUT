@@ -23,9 +23,7 @@ public enum StartMenuItems implements IMenuItems {
             game.enterState(MapGameState.ID);
         }
 
-            @Override
-            public void doSomething(Joueur Joueur) {
-            }
+
     }, NewGame    {
 
             @Override
@@ -33,10 +31,6 @@ public enum StartMenuItems implements IMenuItems {
                 game.enterState(NewGameState.ID);
             }
 
-            @Override
-            public void doSomething(Joueur joueur) {
-                
-            }
 	
     }, Options    {
 
@@ -44,10 +38,5 @@ public enum StartMenuItems implements IMenuItems {
             public void doSomething(StateBasedGame game,Joueur joueur) {
             }
 
-            @Override
-            public void doSomething(Joueur Joueur) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-	
     };
 }

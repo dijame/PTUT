@@ -13,6 +13,8 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 import Menu.items.IMenuItems;
 import Menu.items.StartMenuItems;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -83,7 +85,7 @@ public class MainScreenGameState extends BasicGameState{
     public void keyPressed(int key, char c) {
         switch (key) {
 	        case Input.KEY_DOWN:
-	        	if(cursorIndex<maxCursorIndex){
+	        	if(cursorIndex<maxCursorIndex && cursorIndex != -1){
 	        		cursorIndex++;
 	        		cursorPositionY += 60;
                                 this.music.getSelect().play();
@@ -98,7 +100,11 @@ public class MainScreenGameState extends BasicGameState{
 	            break;
 	        case Input.KEY_ENTER:
                         if(cursorIndex == -1) cursorIndex = 0;
-                        else menuItems[cursorIndex].doSomething(game,joueur);
+                        else try {
+                            menuItems[cursorIndex].doSomething(game,joueur);
+        } catch (SlickException ex) {
+            Logger.getLogger(MainScreenGameState.class.getName()).log(Level.SEVERE, null, ex);
+        }
 	            break;
         }
 	}

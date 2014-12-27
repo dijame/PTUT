@@ -12,7 +12,6 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
-import org.newdawn.slick.KeyListener;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
@@ -32,6 +31,7 @@ public class MenuGameState extends BasicGameState{
 	// business logic
 	protected int cursorIndex;
 	protected int maxCursorIndex;
+        protected boolean visibleItems;
 	protected IMenuItems [] menuItems;
 
 	//UI logic
@@ -46,9 +46,10 @@ public class MenuGameState extends BasicGameState{
     }
 
     @Override
-    public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
+    public void init(GameContainer gc, StateBasedGame game) throws SlickException {
         this.menuItems = new IMenuItems [] {PlayMenuItems.Pokedex, PlayMenuItems.Pokemon,PlayMenuItems.Bag,PlayMenuItems.Pokegear,PlayMenuItems.Gold,PlayMenuItems.Save,PlayMenuItems.Option,PlayMenuItems.Exit };
         this.cursorIndex = 0;
+        visibleItems = false;
         this.maxCursorIndex = this.menuItems.length-1;
 
         this.choixImg = new Image("ressource/Background/arrow.png");
@@ -60,14 +61,22 @@ public class MenuGameState extends BasicGameState{
 
     @Override
     public void render(GameContainer gc, StateBasedGame game, Graphics g) throws SlickException {
+        if(visibleItems == false) {
         this.map.render();
         this.joueur.render(g);
         menuImg.draw(0,0,800,600);
         choixImg.draw(cursorPositionX,cursorPositionY);
+        }
+        else {
+            menuImg.bind();
+            choixImg.bind();
+            menuItems[cursorIndex].doSomething(this.game,this.joueur);
+            if(cursorIndex == 5 || cursorIndex == 7) init(gc,game);
+        }
     }
 
     @Override
-    public void update(GameContainer gc, StateBasedGame sbg, int i) throws SlickException {
+    public void update(GameContainer gc, StateBasedGame game, int delta) throws SlickException {
     }
     
     @Override
@@ -86,8 +95,11 @@ public class MenuGameState extends BasicGameState{
 	        	}
 	            break;
 	        case Input.KEY_ENTER:
-	        	menuItems[cursorIndex].doSomething(game,joueur);
+	        	visibleItems = true;
 	            break;
+                case Input.KEY_ESCAPE:
+                        visibleItems = false;
+                    break;
         }
 	}
     @Override
