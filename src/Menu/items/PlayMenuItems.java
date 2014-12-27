@@ -1,7 +1,14 @@
 package Menu.items;
 
 import Acteur.Joueur;
+import Acteur.StateJoueur;
 import InGame.MapGameState;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
@@ -50,8 +57,26 @@ public enum PlayMenuItems implements IMenuItems {
     }, Save    {
 
             @Override
-            public void doSomething(StateBasedGame game, Joueur Joueur) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            public void doSomething(StateBasedGame game, Joueur joueur) {
+                FileOutputStream sortieDeFicher = null;
+                try {
+                    StateJoueur sauvegarde = new StateJoueur(joueur);
+                    sortieDeFicher = sortieDeFicher = new FileOutputStream("ressource/Save/save.pkm");
+                    ObjectOutputStream sortieDObjet = new ObjectOutputStream(sortieDeFicher);
+                    sortieDObjet.writeObject(sauvegarde);
+                    sortieDObjet.close();
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(PlayMenuItems.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(PlayMenuItems.class.getName()).log(Level.SEVERE, null, ex);
+                } finally {
+                    try {
+                        sortieDeFicher.close();
+                    } catch (IOException ex) {
+                        Logger.getLogger(PlayMenuItems.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                game.enterState(MapGameState.ID);
             }
 
 
