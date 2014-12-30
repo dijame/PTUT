@@ -5,8 +5,9 @@
  */
 package InGame;
 
-import Acteur.JoueurCommande;
-import Acteur.Joueur;
+import Acteur.Personnage.JoueurCommande;
+import Acteur.Personnage.Joueur;
+import Acteur.Pokemon.Pokemon;
 import Menu.MenuGameState;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -28,26 +29,31 @@ public class MapGameState extends BasicGameState{
     private Joueur joueur;
     private JoueurCommande commande;
     private MusicGame music;
+    private Pokemon pokemon;
     
-    public MapGameState(Carte map,Joueur joueur, JoueurCommande commande, MusicGame music) {
+    public MapGameState(Carte map,Joueur joueur, JoueurCommande commande, MusicGame music,Pokemon pokemon) {
         this.map= map;
         this.joueur = joueur;
         this.commande = commande;
         this.music = music;
+        this.pokemon = pokemon;
     }
     
     @Override
     public void init(GameContainer container, StateBasedGame game) throws SlickException {
         this.container = container;
         this.map.init();
-        this.joueur.init();
+        this.joueur.initAnimation();
         this.game = game;
     }
 
     @Override
     public void render(GameContainer gc, StateBasedGame game, Graphics grphcs) throws SlickException {
+            // Caméra
+            grphcs.translate(container.getWidth() / 2 - (int) joueur.getX(), 
+            container.getHeight() / 2 - (int) joueur.getY());
             this.map.render();
-            this.joueur.render(grphcs);
+            this.joueur.render(gc,grphcs);
     }
     
     @Override

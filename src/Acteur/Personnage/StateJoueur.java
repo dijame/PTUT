@@ -1,7 +1,8 @@
-package Acteur;
+package Acteur.Personnage;
 
 
-import Acteur.Joueur;
+import Acteur.Pokemon.StatePokemon;
+import Acteur.Personnage.Joueur;
 import java.io.Serializable;
 
 /*
@@ -21,6 +22,7 @@ public class StateJoueur implements Serializable{
     private int badge;
     private int pokedex;
     private float x, y;
+    private StatePokemon[] playerPkm = new StatePokemon[5];
 
     public StateJoueur(Joueur joueur) {
         this.x = joueur.getX();
@@ -29,6 +31,9 @@ public class StateJoueur implements Serializable{
         this.gold = joueur.getGold();
         this.badge = joueur.getBadge();
         this.pokedex = joueur.getPokedex();
+        for(int i = 0;i<playerPkm.length;i++){
+            this.playerPkm[i] = new StatePokemon(joueur.playerPkm[i].getNom(),joueur.playerPkm[i].getPvMax(),joueur.playerPkm[i].getPv(),joueur.playerPkm[i].getAtq(),joueur.playerPkm[i].getDef(),joueur.playerPkm[i].getAtqSpe(),joueur.playerPkm[i].getDefSpe(),joueur.playerPkm[i].getVitt(),joueur.playerPkm[i].getType(),joueur.playerPkm[i].getLevel(),joueur.playerPkm[i].getPkmSprite());;
+        }
     }
 
     /**
@@ -71,5 +76,12 @@ public class StateJoueur implements Serializable{
      */
     public float getY() {
         return y;
+    }
+
+    /**
+     * @return the playerPkm
+     */
+    public StatePokemon[] getPlayerPkm() {
+        return playerPkm;
     }
 }

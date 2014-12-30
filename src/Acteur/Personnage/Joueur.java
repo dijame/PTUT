@@ -1,4 +1,4 @@
-package Acteur;
+package Acteur.Personnage;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -6,16 +6,18 @@ package Acteur;
  * and open the template in the editor.
  */
 
+import Acteur.Acteur;
+import Acteur.Pokemon.Pokemon;
 import InGame.Carte;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Color;
+import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 
@@ -23,10 +25,10 @@ import org.newdawn.slick.SpriteSheet;
  *
  * @author Simka
  */
-public class Joueur {
+public class Joueur extends Acteur{
     
     //Animation
-    private float x = 300, y = 300;
+    private float x, y;
     private int direction;
     private boolean moving = false;
     private Animation[] animations = new Animation[8];
@@ -34,23 +36,30 @@ public class Joueur {
     
             
     //Variable Stat (Nom,Gold,etc ...)
-    private String nom;
     private int gold;
     private int badge;
     private int pokedex;
     
-    public Joueur(Carte map){
+    public Joueur(Pokemon pokemon,Carte map){
+        super(pokemon);
         this.map = map;
     }
     
     public void init() throws SlickException {
-
+        //Variable position
+        x = 665; y = 567;
+        direction = 1;
         //Variable Stat
-        this.nom= "";
+        this.nom = "";
         this.gold = 0;
         this.badge = 0;
         this.pokedex = 0;
-        
+        this.dresseur = true;
+        for(int i =0;i<5;i++) {
+            playerPkm[i] = pokemon.getPokemon(i);
+        }
+    }
+    public void initAnimation() throws SlickException {
         SpriteSheet spriteSheet = new SpriteSheet("ressource/sprites/spriteMomo.png", 57, 57);// image contenant les sprites
         // animations[0] pour aller au sud, [1] a l'ouest, [2] au nord [3] à l'est
         
@@ -77,7 +86,9 @@ public class Joueur {
             -fillOval permet de mettre une ombre sous le personnage.
     
     */
-      public void render( Graphics g) throws SlickException {
+      public void render(GameContainer container, Graphics g) throws SlickException {
+        
+        // Animation
         g.setColor(new Color(0, 0, 0, .5f));
         g.fillOval(x-30 , y - 6, 32, 16);
         g.drawAnimation(animations[direction + (moving ? 4 : 0)], x - 40, y - 40);
@@ -85,24 +96,61 @@ public class Joueur {
     
     // Cette méthode permet de mettre à jour la position du personnage
     public void update(int delta){
+        for (int objectID = 0; objectID < map.getObjectCount(0); objectID++) {
+        if (x > map.getObjectX(0, objectID)
+                && x < map.getObjectX(0, objectID) + map.getObjectWidth(0, objectID)
+                && y > map.getObjectY(0, objectID)
+                && y < map.getObjectY(0, objectID) + map.getObjectHeight(0, objectID)) {
+            if ("teleport".equals(map.getObjectType(0, objectID))) {
+                x = Float.parseFloat(map.getObjectProperty(0, objectID, "dest-x", Float.toString(x)));
+                y = Float.parseFloat(map.getObjectProperty(0, objectID, "dest-y", Float.toString(y)));
+            } 
+        }
+     }
         if (this.moving) {
-            switch (this.direction) {
-            //0 sud, 1 ouest, 2 nord, 3 est ...
-                case 0:
-                    this.y -= .1f * delta;
-                break;
-                case 1:
-                    this.x -= .1f * delta;
-                break;
-                case 2:
-                    this.y += .1f * delta;
-                break;
-                case 3:
-                    this.x += .1f * delta;
-                break;
-            }
+        float futurX = getFuturX(delta);
+        float futurY = getFuturY(delta);
+        boolean collision = isCollision(futurX, futurY);
+        if (collision) {
+            this.moving = false;
+        } else {
+            this.x = futurX;
+            this.y = futurY;
         }
     }
+    //mise à jour de la camera \\
+}
+
+private boolean isCollision(float x, float y) {
+    int tileW = this.map.getTileWidth();
+    int tileH = this.map.getTileHeight();
+    int logicLayer = this.map.getLayerIndex("logic");
+    Image tile = this.map.getTileImage((int) x / tileW, (int) y / tileH, logicLayer);
+    boolean collision = tile != null;
+    if (collision) {
+        Color color = tile.getColor((int) x % tileW, (int) y % tileH);
+        collision = color.getAlpha() > 0;
+    }
+    return collision;
+}
+
+private float getFuturX(int delta) {
+    float futurX = this.x;
+    switch (this.direction) {
+    case 1: futurX = this.x - .1f * delta; break;
+    case 3: futurX = this.x + .1f * delta; break;
+    }
+    return futurX;
+}
+
+private float getFuturY(int delta) {
+    float futurY = this.y;
+    switch (this.direction) {
+    case 0: futurY = this.y - .1f * delta; break;
+    case 2: futurY = this.y + .1f * delta; break;
+    }
+    return futurY;
+}
     /*      Les getteurs et setteur permettent, à partir de la classe JoueurCommande d'avoir acces
             à la position du personnage, savoir si il est en mouvement via sa direction et le boolean
             mooving.
@@ -138,12 +186,6 @@ public class Joueur {
     public void setMoving(boolean moving){
         this.moving = moving;
     }
-    public String getNom() {
-           return nom;
-    }
-    public void setNom(String nom) {
-       this.nom = nom;
-    }
     public int getGold() {
        return gold;
     }
@@ -162,6 +204,9 @@ public class Joueur {
     public void setPokedex(int pokedex) {
         this.pokedex = pokedex;
     }
+    public Pokemon getPkm(){
+        return pokemon;
+    }
 
 
     public void transformerEn(StateJoueur sauvegarde) {
@@ -170,7 +215,9 @@ public class Joueur {
         gold = sauvegarde.getGold();
         badge = sauvegarde.getBadge();
         pokedex = sauvegarde.getPokedex();
-        
+        for(int i = 0;i<playerPkm.length;i++){
+            playerPkm[i] = new Pokemon(sauvegarde.getPlayerPkm()[i].getNom(),sauvegarde.getPlayerPkm()[i].getPvMax(),sauvegarde.getPlayerPkm()[i].getPv(),sauvegarde.getPlayerPkm()[i].getAtq(),sauvegarde.getPlayerPkm()[i].getDef(),sauvegarde.getPlayerPkm()[i].getAtqSpe(),sauvegarde.getPlayerPkm()[i].getDefSpe(),sauvegarde.getPlayerPkm()[i].getVitt(),sauvegarde.getPlayerPkm()[i].getType(),sauvegarde.getPlayerPkm()[i].getLevel(),sauvegarde.getPlayerPkm()[i].getPkmSprite());;
+        }
     }
 
 }

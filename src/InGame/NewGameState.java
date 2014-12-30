@@ -5,7 +5,7 @@
  */
 package InGame;
 
-import Acteur.Joueur;
+import Acteur.Personnage.Joueur;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -29,10 +29,6 @@ public class NewGameState extends BasicGameState{
         this.joueur = joueur;
     }
 
-    @Override
-    public int getID() {
-        return ID;
-    }
 
     @Override
     public void init(GameContainer gc, StateBasedGame game) throws SlickException {
@@ -49,20 +45,25 @@ public class NewGameState extends BasicGameState{
 
     @Override
     public void update(GameContainer gc, StateBasedGame game, int i) throws SlickException {
-
     }
     
     @Override
     public void keyReleased(int key,char c){
     }
+    
     @Override
     public void keyPressed(int key, char c) {
         if(joueur.getNom().length() < 10 && key != Input.KEY_BACK) 
             joueur.setNom(joueur.getNom() + c);
-        if(joueur.getNom().length() > 0 && key == Input.KEY_ESCAPE)  
+        if(joueur.getNom().length() > 0 && key == Input.KEY_BACK)  
             joueur.setNom(joueur.getNom().substring(0,joueur.getNom().length() - 1));
         if(key == Input.KEY_ENTER) game.enterState(MapGameState.ID);
 
+    }
+    
+    @Override
+    public int getID() {
+        return ID;
     }
     
 }
